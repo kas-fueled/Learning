@@ -4,12 +4,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -37,7 +34,6 @@ CharSequence[] items ={
 		
 		Button btn =(Button) findViewById(R.id.btn_dialog);
 		progressDialog= new ProgressDialog(this);
-		progressHandler = new ProgressHandler(progress, progressDialog);
 		btn.setOnClickListener(new View.OnClickListener(){
 			
 			public void onClick(View v) {
@@ -50,31 +46,23 @@ CharSequence[] items ={
 		});
 		
 		
-	}
 	
-public static class ProgressHandler extends Handler {
-		
-		int progress;
-		ProgressDialog progressDialog;
-		
-		public ProgressHandler(int progres, ProgressDialog progressDialog) {
-			this.progress = progres;
-			this.progressDialog = progressDialog;
-		}
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			
-			Log.d("ProgressDialog", "handle message");
-			if(progress >= 100) {
-				progressDialog.dismiss();
-			}else{
-				progress++;
-				progressDialog.incrementProgressBy(1);
-				sendEmptyMessageDelayed(0, 100);						
-			}
-			
-		}
-	}
+ progressHandler = new Handler() {
+	 
+	 public void handleMessage(Message msg){
+		 super.handleMessage(msg);
+		 if(progress>=100) {
+			 
+			 progressDialog.dismiss();
+		 }else{
+			 progress++;
+			 progressDialog.incrementProgressBy(1);
+			 progressHandler.sendEmptyMessageDelayed(0, 100);
+		 }
+		 
+	 }
+ };
+}	
 
 	@Override
 	protected Dialog onCreateDialog(int id){
